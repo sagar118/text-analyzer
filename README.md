@@ -1,4 +1,4 @@
-# Hate Text Analyzer
+# Text Analyzer
 
 ## Checklist:
 
