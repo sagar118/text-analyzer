@@ -30,3 +30,32 @@
   * [ ] Makefile
   * [ ] pre-commit hooks
   * [ ] CI/CD pipeline
+
+
+## Infrastructure
+
+**Export environment variable**: `export TF_VAR_env = "dev"`
+
+**Commands to run terraform files**:
+
+```bash
+# Use `-reconfigure` whenever switching between environments
+
+# Development
+terraform init -backend-config="key=infrastructure-dev.tfstate" -var-file="./modules/vars/dev.tfvars"
+terraform validate
+terraform plan -var-file="./modules/vars/dev.tfvars"
+terraform apply -var-file="./modules/vars/dev.tfvars"
+
+# Staging
+terraform init -backend-config="key=infrastructure-stg.tfstate" -var-file="./modules/vars/stg.tfvars"
+terraform validate
+terraform plan -var-file="./modules/vars/stg.tfvars"
+terraform apply -var-file="./modules/vars/stg.tfvars"
+
+# Production
+terraform init -backend-config="key=infrastructure-prod.tfstate" -var-file="./modules/vars/prod.tfvars"
+terraform validate
+terraform plan -var-file="./modules/vars/prod.tfvars"
+terraform apply -var-file="./modules/vars/prod.tfvars"
+```
