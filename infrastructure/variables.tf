@@ -3,22 +3,34 @@ variable "aws_region" {
     default = "us-east-1"
 }
 
-variable "project_id" {
-    description = "Project ID"
-    default = "mlops-zc-ta"
+variable "org" {
+    description = "Project Organization"
+    default = "mlops-zc"
+}
+
+variable "project_name" {
+    description = "Project Name"
+    default = "text-analyzer"
 }
 
 variable "env" {
-    description = "Execution Environment"
-    type = string
+    description = "Project Environment"
+}
+
+variable "aws_access_key" {
+    description = "AWS Access Key"
+}
+
+variable "aws_secret_key" {
+    description = "AWS Secret Key"
 }
 
 variable "dataset_bucket_name" {
-    description = "Dataset Bucket Name"
-    type = string
+    description = "Name of S3 Bucket for Dataset"
+    default = "dataset"
 }
 
 variable "model_registry_bucket_name" {
-    description = "Model Registry Bucket Name"
-    type = string
+    description = "Name of S3 Bucket for Model Registry"
+    default = "model-registry"
 }
