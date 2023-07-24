@@ -38,6 +38,21 @@
 
 **Commands to run terraform files**:
 
+Terraform Cloud:
+
+* Login to Terraform Cloud: `terraform login`
+* Create new workspace: `terraform workspace new <workspace_name>`
+* Select workspace: `terraform workspace select <workspace_name>`
+* List workspaces: `terraform workspace list`
+* Delete workspace: `terraform workspace delete <workspace_name>`
+* Show workspace: `terraform workspace show`
+
+```bash
+terraform plan -var-file="./modules/vars/dev.tfvars" -var-file="./modules/vars/secrets.tfvars"
+terraform apply -var-file="./modules/vars/dev.tfvars" -var-file="./modules/vars/secrets.tfvars"
+```
+
+
 ```bash
 # Use `-reconfigure` whenever switching between environments
 
@@ -58,4 +73,8 @@ terraform init -backend-config="key=infrastructure-prod.tfstate" -var-file="./mo
 terraform validate
 terraform plan -var-file="./modules/vars/prod.tfvars"
 terraform apply -var-file="./modules/vars/prod.tfvars"
+
+terraform import -var-file="./modules/vars/dev.tfvars" module.mlops_zc_ta_ec2_role.aws_iam_role.mlops_zc_text_analyzer mlops-zc-text-analyzer
+terraform import -var-file="./modules/vars/dev.tfvars" aws_iam_role.mlops_zc_text_analyzer mlops-zc-text-analyzer
+terraform import -var-file="./modules/vars/dev.tfvars" modules.ec2.aws_iam_role.mlops_zc_text_analyzer mlops-zc-text-analyzer
 ```
