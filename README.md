@@ -83,12 +83,10 @@ terraform import -var-file="./modules/vars/dev.tfvars" modules.ec2.aws_iam_role.
 
 ```bash
 psql \
-   --host=terraform-20230726163843191300000001.c4rrlovvb5cx.us-east-1.rds.amazonaws.com \
+   --host=<HOST> \
    --port=5432 \
-   --username=sagarthacker \
+   --username=<USERNAME> \
    --password \
-   --dbname=mlflowtrackingserver 
-
-MlopsZCta#2023
+   --dbname=<DB_NAME>
 ```
 
