@@ -1,8 +1,3 @@
-# Backend Key:
-# dev: infrastructure-dev.tfstate
-# stg: infrastructure-stg.tfstate
-# prod: infrastructure-prod.tfstate
-
 terraform {
     required_providers {
         aws = {
@@ -50,16 +45,17 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
     role = aws_iam_role.ec2_role.name
 }
 
-# Create an EC2 Instance
-module "mlops_zc_ta_ec2_instance" {
+# Create EC2 Instance and PostgreSQL RDS Instance
+# Only create the EC2 Instance and RDS Instance if the environment is dev
+# Otherwise, do not create the EC2 Instance and RDS Instance
+# Connect the EC2 Instance to the RDS Instance
+module "ec2_rds" {
     count                   = "${var.env}" == "dev" ? 1 : 0
-    source                  = "./modules/ec2"
-    ami                     = "ami-053b0d53c279acc90"
-    instance_type           = "t3.2xlarge"
-    key_name                = "mlops-zc-key"
-    name                    = "${var.org}-${var.project_name}-ec2"
-    env                     = "${var.env}"
-    iam_instance_profile    = aws_iam_instance_profile.ec2_instance_profile.name
+    source                  = "./modules/ec2_rds"
+    db_name                 = var.db_name
+    db_username             = var.db_username
+    db_password             = var.db_password
+    ec2_instance_profile    = aws_iam_instance_profile.ec2_instance_profile.name
 }
 
 # Create a S3 Bucket for Dataset
@@ -97,4 +93,3 @@ module "model_registry_bucket_s3_ec2_policy" {
     ]
     iam_role_name = aws_iam_role.ec2_role.name
 }
-

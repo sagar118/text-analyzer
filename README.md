@@ -50,6 +50,7 @@ Terraform Cloud:
 ```bash
 terraform plan -var-file="./modules/vars/dev.tfvars" -var-file="./modules/vars/secrets.tfvars"
 terraform apply -var-file="./modules/vars/dev.tfvars" -var-file="./modules/vars/secrets.tfvars"
+terraform destroy -var-file="./modules/vars/dev.tfvars" -var-file="./modules/vars/secrets.tfvars"
 ```
 
 
@@ -78,3 +79,16 @@ terraform import -var-file="./modules/vars/dev.tfvars" module.mlops_zc_ta_ec2_ro
 terraform import -var-file="./modules/vars/dev.tfvars" aws_iam_role.mlops_zc_text_analyzer mlops-zc-text-analyzer
 terraform import -var-file="./modules/vars/dev.tfvars" modules.ec2.aws_iam_role.mlops_zc_text_analyzer mlops-zc-text-analyzer
 ```
+
+
+```bash
+psql \
+   --host=terraform-20230726163843191300000001.c4rrlovvb5cx.us-east-1.rds.amazonaws.com \
+   --port=5432 \
+   --username=sagarthacker \
+   --password \
+   --dbname=mlflowtrackingserver 
+
+MlopsZCta#2023
+```
+
