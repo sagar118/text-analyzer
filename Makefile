@@ -17,3 +17,34 @@ install-aws-cli:
 install-postgres:
 	sudo apt-get update -y
 	sudo apt install postgresql -y
+
+install-software:
+	sudo yum update -y
+	mkdir -p ../downloads
+	
+	# Install Python
+	cd ../downloads && wget https://repo.anaconda.com/archive/Anaconda3-2023.07-1-Linux-x86_64.sh && \
+	bash Anaconda3-2023.07-1-Linux-x86_64.sh
+	
+	# Install PostgreSQL
+	sudo dnf update -y 
+	sudo dnf install postgresql15.x86_64 postgresql15-server -y
+	sudo postgresql-setup --initdb
+	sudo systemctl start postgresql
+	sudo systemctl enable postgresql
+	sudo systemctl status postgresql
+
+	# Install Docker
+	sudo yum install docker -y
+	sudo usermod -a -G docker ec2-user
+	newgrp docker
+	sudo systemctl enable docker.service
+
+	# Install docker-compose
+	cd ../downloads && wget https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -O docker-compose && \
+	sudo chmod +x docker-compose
+	echo 'export PATH=$$HOME/downloads:$$PATH' >> ~/.bashrc
+
+	# Install pipenv
+	pip install --upgrade pip
+	pip install pipenv

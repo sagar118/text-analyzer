@@ -31,6 +31,10 @@
   * [ ] pre-commit hooks
   * [ ] CI/CD pipeline
 
+```
+sudo yum update
+sudo yum install git
+```
 
 ## Infrastructure
 
