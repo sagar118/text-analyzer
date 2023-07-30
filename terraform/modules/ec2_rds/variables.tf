@@ -40,7 +40,7 @@ variable "settings" {
     "ec2_instance" = {
       count         = 1                       // number of EC2 instances
       instance_type = "t3.2xlarge"            // the EC2 instance
-      ami           = "ami-053b0d53c279acc90" // the AMI
+      ami           = "ami-0f34c5ae932e6f0e4" // the AMI
       key_name      = "mlops-zc-key"          // the key name
     }
   }

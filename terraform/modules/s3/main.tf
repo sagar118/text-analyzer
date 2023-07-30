@@ -4,6 +4,6 @@ resource "aws_s3_bucket" "s3_bucket" {
         Environment = var.bucket_env
     }
     lifecycle {
-        prevent_destroy = true
+        prevent_destroy = false
     }
 }

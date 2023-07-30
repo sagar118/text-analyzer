@@ -321,8 +321,13 @@ resource "aws_instance" "ec2_instance" {
   // varible "ec2_instance_profile".
   iam_instance_profile   = var.ec2_instance_profile
 
+  // Increase storage volume size to 40GB
+  root_block_device {
+    volume_size = 40
+  }
+
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 
   // We are tagging the EC2 instance with the name "mlops-zc-ta-ec2-instance-" followed by
