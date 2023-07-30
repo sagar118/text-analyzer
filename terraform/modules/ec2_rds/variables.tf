@@ -102,3 +102,7 @@ variable "db_password" {
 variable "ec2_instance_profile" {
     description = "IAM Instance Profile"
 }
+
+variable "env" {
+    description = "Project Environment"
+}

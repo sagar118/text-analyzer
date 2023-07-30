@@ -15,7 +15,7 @@ resource "aws_vpc" "vpc_block" {
 
   // We are tagging the VPC with the name "vpc_block"
   tags = {
-    Name = "mlops-zc-ta-vpc-block"
+    Name = "mlops-zc-ta-vpc-block-${var.env}"
   }
 }
 
@@ -28,7 +28,7 @@ resource "aws_internet_gateway" "igw_block" {
 
   // We are tagging the IGW with the name igw
   tags = {
-    Name = "mlops-zc-ta-igw-block"
+    Name = "mlops-zc-ta-igw-block-${var.env}"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_subnet" "public_subnet" {
   // We are tagging the subnet with a name of "public_subnet_" and
   // suffixed with the count
   tags = {
-    Name = "mlops-zc-ta-public-subnet-${count.index}"
+    Name = "mlops-zc-ta-public-subnet-${count.index}-${var.env}"
   }
 }
 
@@ -85,7 +85,7 @@ resource "aws_subnet" "private_subnet" {
   // We are tagging the subnet with a name of "private_subnet_" and
   // suffixed with the count
   tags = {
-    Name = "mlops-zc-ta-private-subnet-${count.index}"
+    Name = "mlops-zc-ta-private-subnet-${count.index}-${var.env}"
   }
 }
 
@@ -152,7 +152,7 @@ resource "aws_route_table_association" "private" {
 // Create a security for the EC2 instances called "ec2_sg"
 resource "aws_security_group" "ec2_sg" {
   // Basic details like the name and description of the SG
-  name        = "mlops-zc-ta-ec2-sg"
+  name        = "mlops-zc-ta-ec2-sg-${var.env}"
   description = "Security group for ec2 servers"
   // We want the SG to be in the "vpc_block" VPC
   vpc_id      = aws_vpc.vpc_block.id
@@ -192,14 +192,14 @@ resource "aws_security_group" "ec2_sg" {
 
   // Here we are tagging the SG with the name "ec2-sg"
   tags = {
-    Name = "mlops-zc-ta-ec2-sg"
+    Name = "mlops-zc-ta-ec2-sg-${var.env}"
   }
 }
 
 // Create a security group for the RDS instances called "db_sg"
 resource "aws_security_group" "db_sg" {
   // Basic details like the name and description of the SG
-  name        = "mlops-zc-ta-db-sg"
+  name        = "mlops-zc-ta-db-sg-${var.env}"
   description = "Security group for databases"
   // We want the SG to be in the "vpc_block" VPC
   vpc_id      = aws_vpc.vpc_block.id
@@ -223,14 +223,14 @@ resource "aws_security_group" "db_sg" {
 
   // Here we are tagging the SG with the name "db-sg"
   tags = {
-    Name = "mlops-zc-ta-db-sg"
+    Name = "mlops-zc-ta-db-sg-${var.env}"
   }
 }
 
 // Create a db subnet group named "db_subnet_group"
 resource "aws_db_subnet_group" "db_subnet_group" {
   // The name and description of the db subnet group
-  name        = "mlops-zc-ta-db-subnet-group"
+  name        = "mlops-zc-ta-db-subnet-group-${var.env}"
   description = "DB subnet group"
   
   // Since the db subnet group requires 2 or more subnets, we are going to
@@ -285,7 +285,7 @@ resource "aws_db_instance" "database" {
 
   // Here we are tagging the database with the name "mlops-zc-ta-database"
   tags = {
-    Name = "mlops-zc-ta-mlflow-database"
+    Name = "mlops-zc-ta-mlflow-database-${var.env}"
   }
 }
 
@@ -321,10 +321,14 @@ resource "aws_instance" "ec2_instance" {
   // varible "ec2_instance_profile".
   iam_instance_profile   = var.ec2_instance_profile
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
   // We are tagging the EC2 instance with the name "mlops-zc-ta-ec2-instance-" followed by
   // the count index
   tags = {
-    Name = "mlops-zc-ta-ec2-instance-${count.index}"
+    Name = "mlops-zc-ta-ec2-instance-${count.index}-${var.env}"
   }
 }
 
@@ -344,11 +348,11 @@ resource "aws_eip" "ec2_eip" {
   instance = aws_instance.ec2_instance[count.index].id
 
 	// We want the Elastic IP to be in the VPC
-  vpc      = true
+  domain      = "vpc"
 
 	// Here we are tagging the Elastic IP with the name
 	// "ec2-instance-eip-" followed by the count index
   tags = {
-    Name = "mlops-zc-ta-ec2-instance-eip-${count.index}"
+    Name = "mlops-zc-ta-ec2-instance-eip-${count.index}-${var.env}"
   }
 }
