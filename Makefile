@@ -34,12 +34,6 @@ install-software:
 	sudo systemctl enable postgresql
 	sudo systemctl status postgresql
 
-	# Install Docker
-	sudo yum install docker -y
-	sudo usermod -a -G docker ec2-user
-	newgrp docker
-	sudo systemctl enable docker.service
-
 	# Install docker-compose
 	cd ../downloads && wget https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -O docker-compose && \
 	sudo chmod +x docker-compose
@@ -48,3 +42,12 @@ install-software:
 	# Install pipenv
 	pip install --upgrade pip
 	pip install pipenv
+
+	# Run bash file
+	source ~/.bashrc
+
+	# Install Docker
+	sudo yum install docker -y
+	sudo usermod -a -G docker ec2-user
+	newgrp docker
+	sudo systemctl enable docker.service

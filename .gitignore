@@ -1,5 +1,6 @@
 .DS_Store
 **/secrets.tfvars
+**/data/
 
 # --------------------
 # Local .terraform directories
