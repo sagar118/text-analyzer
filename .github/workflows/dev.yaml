@@ -16,7 +16,6 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
   CONFIG_DIRECTORY: "./terraform"
-  ENVIRONMENT: "dev"
 
 jobs:
   build-infrastructure:
@@ -47,6 +46,6 @@ jobs:
       - name: Verify Terraform Configuration
         working-directory: "terraform"
         run: |
-          terraform init
           terraform workspace list
-          terraform workspace select $ENVIRONMENT
+          terraform workspace select ${{ env.TF_WORKSPACE }}
+          terraform init
