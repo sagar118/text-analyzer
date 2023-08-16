@@ -47,6 +47,7 @@ jobs:
         env:
           TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
         run: |
-          terraform init
-          terraform workspace list
-          terraform workspace select $TF_WORKSPACE
+          echo 'Work space: ${TF_WORKSPACE}'
+          # terraform init
+          # terraform workspace list
+          # terraform workspace select $TF_WORKSPACE
