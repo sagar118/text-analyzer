@@ -48,7 +48,7 @@ jobs:
         working-directory: "terraform"
         env:
           TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-        run: terraform workspace select ${TF_WORKSPACE}
+        run: terraform workspace list
 
       - name: Terraform plan
         working-directory: "terraform"
