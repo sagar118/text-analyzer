@@ -14,7 +14,6 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   TF_CLOUD_ORGANIZATION: "mlops-zoomcamp"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
   CONFIG_DIRECTORY: "./terraform"
 
 jobs:
@@ -45,7 +44,9 @@ jobs:
           
       - name: Verify Terraform Configuration
         working-directory: "terraform"
+        env:
+          TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
         run: |
           terraform init
           terraform workspace list
-          # terraform workspace select ${{ env.TF_WORKSPACE }}
+          terraform workspace select $TF_WORKSPACE
