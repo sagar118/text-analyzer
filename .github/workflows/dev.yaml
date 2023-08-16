@@ -19,7 +19,7 @@ env:
 jobs:
   build-infrastructure:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: DEV
 
     steps:
       - name: Checkout Code
@@ -45,7 +45,7 @@ jobs:
       - name: Verify Terraform Configuration
         working-directory: "terraform"
         env:
-          TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
+          TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
         run: |
           echo Work space: ${TF_WORKSPACE}
           # terraform init
