@@ -38,16 +38,16 @@ jobs:
           terraform_version: 1.5.3
           cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
           
-          # - name: Checkout Terraform Workspace
-          #   # run: terraform workspace select ${ TF_WORKSPACE }
-          #   run: echo "terraform workspace select $TF_WORKSPACE"
-          
-      - name: Verify Terraform Configuration
+      - name: Initialize Terraform Configuration
+        working-directory: "terraform"
+        env:
+          TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
+        run: terraform init
+
+      - name: Select Terraform Workspace
         working-directory: "terraform"
         env:
           TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
         run: |
-          # echo Work space: ${TF_WORKSPACE}
-          terraform init
           terraform workspace list
           terraform workspace select ${TF_WORKSPACE}
