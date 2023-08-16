@@ -1,0 +1,52 @@
+name: Dev-Environment-CI
+
+on:
+  push:
+    branches:
+      - feature
+
+permissions:
+  contents: read
+
+env:
+  AWS_DEFAULT_REGION: 'us-east-1'
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  TF_CLOUD_ORGANIZATION: "mlops-zoomcamp"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
+  TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
+  CONFIG_DIRECTORY: "./terraform"
+  ENVIRONMENT: "dev"
+
+jobs:
+  build-infrastructure:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.3
+          cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
+          
+          # - name: Checkout Terraform Workspace
+          #   # run: terraform workspace select ${ TF_WORKSPACE }
+          #   run: echo "terraform workspace select $TF_WORKSPACE"
+          
+      - name: Verify Terraform Configuration
+        working-directory: "terraform"
+        run: |
+          terraform init
+          terraform workspace new $ENVIRONMENT
+          terraform workspace select $ENVIRONMENT

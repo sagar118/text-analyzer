@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+scikit-learn = "*"
+uvicorn = {version = "*", extras = ["standard"]}
+
+[dev-packages]
+pytest = "*"
+deepdiff = "*"
+pylint = "*"
+black = "*"
+isort = "*"
+pre-commit = "*"
+requests = "*"
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.16"
