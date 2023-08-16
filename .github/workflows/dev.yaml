@@ -48,5 +48,5 @@ jobs:
         working-directory: "terraform"
         run: |
           terraform init
-          terraform workspace new $ENVIRONMENT
+          terraform workspace list
           terraform workspace select $ENVIRONMENT
