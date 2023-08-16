@@ -46,6 +46,6 @@ jobs:
       - name: Verify Terraform Configuration
         working-directory: "terraform"
         run: |
+          terraform init
           terraform workspace list
           terraform workspace select ${{ env.TF_WORKSPACE }}
-          terraform init
