@@ -14,20 +14,42 @@ install-aws-cli:
 	sudo apt install unzip
 	cd downloads && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
 
-install-postgres:
-	sudo apt-get update -y
-	sudo apt install postgresql -y
+test:
+	pytest tests/
+
+quality_checks:
+	isort .
+	black .
+	pylint --recursive=y .
+
+# build: quality_checgks test
+# 	docker build -t ${LOCAL_IMAGE_NAME} .
+
+# integration_test: build
+# 	LOCAL_IMAGE_NAME=${LOCAL_IMAGE_NAME} bash integraton-test/run.sh
+
+# publish: build integration_test
+# 	LOCAL_IMAGE_NAME=${LOCAL_IMAGE_NAME} bash scripts/publish.sh
+
+setup:
+	# Install pipenv
+	pip install --upgrade pip
+	pip install pipenv
+	pipenv install --dev
+
+	# Pre-commit hooks
+	pre-commit install
 
 install-software:
 	sudo yum update -y
 	mkdir -p ../downloads
-	
+
 	# Install Python
 	cd ../downloads && wget https://repo.anaconda.com/archive/Anaconda3-2023.07-1-Linux-x86_64.sh && \
 	bash Anaconda3-2023.07-1-Linux-x86_64.sh
-	
+
 	# Install PostgreSQL
-	sudo dnf update -y 
+	sudo dnf update -y
 	sudo dnf install postgresql15.x86_64 postgresql15-server -y
 	sudo postgresql-setup --initdb
 	sudo systemctl start postgresql
@@ -38,10 +60,6 @@ install-software:
 	cd ../downloads && wget https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -O docker-compose && \
 	sudo chmod +x docker-compose
 	echo 'export PATH=$$HOME/downloads:$$PATH' >> ~/.bashrc
-
-	# Install pipenv
-	pip install --upgrade pip
-	pip install pipenv
 
 	# Run bash file
 	source ~/.bashrc

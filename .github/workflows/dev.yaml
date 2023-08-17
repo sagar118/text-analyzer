@@ -8,15 +8,39 @@ on:
 permissions:
   contents: read
 
-env:
-  AWS_DEFAULT_REGION: 'us-east-1'
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  TF_CLOUD_ORGANIZATION: "mlops-zoomcamp"
-  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  CONFIG_DIRECTORY: "./terraform"
-
 jobs:
+  test-and-build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        working-directory: "deployment"
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipenv
+          pipenv install --dev
+
+      # - name: Run unit tests
+      #   working-directory: "deployment"
+      #   run: pipenv run pytest tests/unit
+
+      # - name: Run integration tests
+      #   working-directory: "deployment"
+      #   run: pipenv run pytest tests/integration
+
+      - name: Lint code
+        working-directory: "deployment"
+        run: pipenv run pylint --recursive=y .
+
   build-infrastructure:
     runs-on: ubuntu-latest
     environment: DEV
@@ -28,30 +52,42 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.3
-          cli_config_credentials_token: ${{ env.TF_API_TOKEN }}
-          
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
       - name: Initialize Terraform Configuration
         working-directory: "terraform"
         env:
-          TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-        run: terraform init
-
-      - name: Select Terraform Workspace
-        working-directory: "terraform"
-        env:
-          TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-        run: terraform workspace list
+          TF_WORKSPACE: ${{ vars.TF_WORKSPACE }}
+        run: terraform init -input=false
 
       - name: Terraform plan
+        id: tf-plan
         working-directory: "terraform"
         env:
-          TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-        run: terraform plan -var-file="./modules/vars/${TF_WORKSPACE}.tfvars"
+          TF_WORKSPACE: ${{ vars.TF_WORKSPACE }}
+          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD}}
+        run: terraform plan -var-file="./modules/vars/${TF_WORKSPACE}.tfvars" -input=false
+
+      - name: Terraform apply
+        working-directory: "terraform"
+        if: ${{ steps.tf-plan.outcome }} == 'success'
+        env:
+          TF_WORKSPACE: ${{ vars.TF_WORKSPACE }}
+          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD}}
+        run: |
+          terraform apply -var-file="./modules/vars/${TF_WORKSPACE}.tfvars" -input=false -auto-approve
+          # Add the Outputs to the GitHub Environment
