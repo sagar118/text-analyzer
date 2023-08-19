@@ -41,14 +41,12 @@ resource "aws_iam_policy" "ecr_write_policy" {
   })
 }
 
-resource "aws_iam_policy_attachment" "ecr_read_attachment" {
-  name       = "ECRReadAttachment"
+resource "aws_iam_role_policy_attachment" "ecr_read_attachment" {
   policy_arn = aws_iam_policy.ecr_read_policy.arn
-  role       = vars.ec2_iam_role_name
+  role       = var.ec2_iam_role_name
 }
 
-resource "aws_iam_policy_attachment" "ecr_write_attachment" {
-  name       = "ECRWriteAttachment"
+resource "aws_iam_role_policy_attachment" "ecr_write_attachment" {
   policy_arn = aws_iam_policy.ecr_write_policy.arn
-  role       = vars.ec2_iam_role_name
+  role       = var.ec2_iam_role_name
 }
