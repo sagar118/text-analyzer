@@ -66,7 +66,7 @@ module "dataset_bucket" {
     bucket_env = "${var.env}"
 }
 
-# Create a S3 Bucket for Model Registry 
+# Create a S3 Bucket for Model Registry
 module "model_registry_bucket" {
     source = "./modules/s3"
     bucket_name = "${var.org}-${var.project_name}-${var.env}-${var.model_registry_bucket_name}"
@@ -98,13 +98,22 @@ module "model_registry_bucket_s3_ec2_policy" {
 module "ecr" {
     source = "./modules/ecr"
     ecr_repo_name = "${var.org}-${var.project_name}-${var.env}-ecr-repo"
+    ec2_iam_role_name = aws_iam_role.ec2_role.name
+    ecr_read_policy_name = "${var.org}-${var.project_name}-${var.env}-ecr-read-policy"
+    ecr_write_policy_name = "${var.org}-${var.project_name}-${var.env}-ecr-write-policy"
 }
 
 module "lambda" {
-    source                  = "./modules/lambda"
-    lambda_role_name        = "${var.org}-${var.project_name}-${var.env}-lambda-role"
-    lambda_function_name    = "${var.org}-${var.project_name}-${var.env}-lambda"
-    image_uri               = module.ecr.ecr_image_uri
+    source                          = "./modules/lambda"
+    lambda_role_name                = "${var.org}-${var.project_name}-${var.env}-lambda-role"
+    lambda_function_name            = "${var.org}-${var.project_name}-${var.env}-lambda"
+    lambda_s3_access_policy_name    = "${var.org}-${var.project_name}-${var.env}-lambda-s3-access-policy"
+    image_uri                       = module.ecr.ecr_image_uri
+    s3_bucket_arns                  = [
+        module.model_registry_bucket.s3_bucket_arn,
+        "${module.model_registry_bucket.s3_bucket_arn}/*"
+    ]
+
 }
 
 module "api_gateway" {

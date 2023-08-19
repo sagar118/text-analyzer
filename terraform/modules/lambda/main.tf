@@ -10,6 +10,7 @@ resource "aws_lambda_function" "lambda" {
     mode = "Active"
   }
 
+  memory_size   = 1024
   timeout = 180
 }
 
