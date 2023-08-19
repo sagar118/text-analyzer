@@ -7,6 +7,6 @@ COPY [ "Pipfile", "Pipfile.lock", "./" ]
 
 RUN pipenv install --system --deploy
 
-COPY ./app ${LAMBDA_TASK_ROOT}/app
+COPY ./app ${LAMBDA_TASK_ROOT}
 
-CMD [ "app.main.handler" ]
+CMD [ "main.handler" ]
