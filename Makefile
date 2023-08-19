@@ -22,7 +22,7 @@ quality_checks:
 	black .
 	pylint --recursive=y .
 
-# build: quality_checgks test
+# build: quality_checks test
 # 	docker build -t ${LOCAL_IMAGE_NAME} .
 
 # integration_test: build

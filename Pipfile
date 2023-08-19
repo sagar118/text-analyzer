@@ -5,8 +5,15 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
-mlflow = "*"
+mlflow = "==2.5.0"
 scikit-learn = "*"
+xgboost = "*"
+boto3 = "*"
+psycopg2-binary = "*"
+nltk = "*"
+contractions = "*"
+unidecode = "*"
+pydantic = "==1.10.8"
 
 [dev-packages]
 pre-commit = "*"
@@ -14,6 +21,7 @@ isort = "*"
 black = "*"
 pytest = "*"
 pylint = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.9"

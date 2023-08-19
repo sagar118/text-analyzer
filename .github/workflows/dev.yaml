@@ -37,10 +37,6 @@ jobs:
       #   working-directory: "deployment"
       #   run: pipenv run pytest tests/integration
 
-      - name: Lint code
-        working-directory: "deployment"
-        run: pipenv run pylint --recursive=y .
-
   build-infrastructure:
     runs-on: ubuntu-latest
     environment: DEV

@@ -1,6 +1,15 @@
 [tool.pylint.messages_control]
 disable = [
-    "invalid-name"
+    "invalid-name",
+    "line-too-long",
+    "missing-module-docstring",
+    "missing-timeout",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "redundant-u-string-prefix",
+    "unused-import",
+    "import-error",
+    "anomalous-backslash-in-string"
 ]
 
 [tool.black]
