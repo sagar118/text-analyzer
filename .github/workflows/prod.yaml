@@ -3,8 +3,6 @@ name: Production-Environment-CI-CD
 on:
   workflow_dispatch:
   pull_request:
-    types:
-      - closed
     branches:
       - main
 
@@ -117,7 +115,7 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     environment: prod
-    needs: build-infrastructure
+    needs: sync-model-registry
 
     steps:
       - name: Checkout Code

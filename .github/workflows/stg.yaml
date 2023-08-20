@@ -115,7 +115,7 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     environment: stg
-    needs: build-infrastructure
+    needs: sync-model-registry
 
     steps:
       - name: Checkout Code
@@ -184,4 +184,5 @@ jobs:
           title: 'Deploy to Production'
           branch: main
           base: staging
+          reviewers: 'sagar118'
           token: ${{ secrets.GH_TOKEN }}
