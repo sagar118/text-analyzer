@@ -179,4 +179,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Open Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: gh pr create --title "Merge Staging to Main" --body "This is a pull request from staging to main." --base main --head staging
