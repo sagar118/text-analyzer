@@ -2,9 +2,11 @@ name: Staging-Environment-CI-CD
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - staging
+      - main
 
 permissions:
   contents: read
@@ -34,7 +36,7 @@ jobs:
   build-infrastructure:
     name: Build Infrastructure
     runs-on: ubuntu-latest
-    environment: stg
+    environment: prod
     needs: test
     outputs:
       ecr_repo: ${{ steps.tf-apply.outputs.ecr_repo }}
@@ -95,7 +97,7 @@ jobs:
   sync-model-registry:
     name: Sync Model Registry
     runs-on: ubuntu-latest
-    environment: stg
+    environment: prod
     needs: build-infrastructure
     steps:
       - name: Configure AWS Credentials
@@ -107,14 +109,14 @@ jobs:
 
       - name: Sync Model Registry
         env:
-          FROM_BUCKET: s3://${{ secrets.DEV_MODEL_REGISTRY }}/${{ secrets.EXPERIMENT_ID }}/${{ secrets.RUN_ID }}
+          FROM_BUCKET: s3://${{ secrets.STG_MODEL_REGISTRY }}/${{ secrets.EXPERIMENT_ID }}/${{ secrets.RUN_ID }}
           TO_BUCKET: s3://${{ needs.build-infrastructure.outputs.model_registry_bucket }}/${{ secrets.EXPERIMENT_ID }}/${{ secrets.RUN_ID }}
         run: aws s3 sync $FROM_BUCKET $TO_BUCKET
 
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
-    environment: stg
+    environment: prod
     needs: build-infrastructure
 
     steps:
@@ -167,21 +169,3 @@ jobs:
               done
 
           aws lambda update-function-code --function-name $LAMBDA_FUNCTION --image-uri $IMAGE_URI
-
-  staging_to_production:
-    name: Push Changes to Production Environment
-    runs-on: ubuntu-latest
-    needs: build-and-deploy
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          commit-message: 'Deploy to Production'
-          title: 'Deploy to Production'
-          branch: main
-          base: staging
-          token: ${{ secrets.GH_TOKEN }}
