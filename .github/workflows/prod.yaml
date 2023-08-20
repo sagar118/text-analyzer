@@ -1,4 +1,4 @@
-name: Staging-Environment-CI-CD
+name: Production-Environment-CI-CD
 
 on:
   workflow_dispatch:
