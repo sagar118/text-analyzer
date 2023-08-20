@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   test:
-    name: Test and Build
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
@@ -24,11 +24,9 @@ jobs:
           python-version: 3.9.16
 
       - name: Install dependencies
-        working-directory: "deployment"
         run: |
-          python -m pip install --upgrade pip
-          pip install pipenv
-          pipenv install --dev
+          pip install --upgrade pip
+          pip install pipenv && pipenv install --dev
 
       - name: Run unit tests
         run: pipenv run pytest tests/unit_tests/
@@ -36,7 +34,7 @@ jobs:
   build-infrastructure:
     name: Build Infrastructure
     runs-on: ubuntu-latest
-    environment: DEV
+    environment: dev
     outputs:
       ecr_repo: ${{ steps.tf-apply.outputs.ecr_repo }}
       model_registry_bucket: ${{ steps.tf-apply.outputs.model_registry_bucket }}
@@ -95,7 +93,7 @@ jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
-    environment: DEV
+    environment: dev
     needs: build-infrastructure
     outputs:
       image_uri: ${{ steps.build-image-step.outputs.image_uri }}
