@@ -87,7 +87,7 @@ jobs:
         run: |
           terraform apply -var-file="./modules/vars/${TF_WORKSPACE}.tfvars" -input=false -auto-approve
           echo "ecr_repo=$(terraform output ecr_repo | xargs)" >> $GITHUB_OUTPUT
-          echo "model_registry_bucket=$(terraform output model_registry_bucket | xargs)" >> $GITHUB_OUTPUT
+          echo "model_registry_bucket=$(terraform output model_registry_model_bucket | xargs)" >> $GITHUB_OUTPUT
           echo "lambda_function=$(terraform output lambda_function | xargs)" >> $GITHUB_OUTPUT
 
   build-and-deploy:
