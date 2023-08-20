@@ -9,7 +9,9 @@ disable = [
     "redundant-u-string-prefix",
     "unused-import",
     "import-error",
-    "anomalous-backslash-in-string"
+    "anomalous-backslash-in-string",
+    "wrong-import-position",
+    "redefined-outer-name"
 ]
 
 [tool.black]
@@ -20,3 +22,8 @@ skip-string-normalization = true
 [tool.isort]
 multi_line_output = 3
 length_sort = true
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]

@@ -22,6 +22,9 @@ black = "*"
 pytest = "*"
 pylint = "*"
 ipykernel = "*"
+httpx = "*"
+uvicorn = "*"
+mangum = "*"
 
 [requires]
 python_version = "3.9"

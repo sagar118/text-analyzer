@@ -22,3 +22,8 @@ variable "lambda_s3_access_policy_name" {
     type        = string
     description = "Lambda S3 access policy name"
 }
+
+variable "lambda_logging_policy_name" {
+    type        = string
+    description = "Lambda logging policy name"
+}

@@ -15,7 +15,10 @@ install-aws-cli:
 	cd downloads && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip && sudo ./aws/install
 
 test:
-	pytest tests/
+	pytest tests/unit_tests
+
+# integration_test:
+# 	pytest tests/integration_tests
 
 quality_checks:
 	isort .
@@ -69,3 +72,6 @@ install-software:
 	sudo usermod -a -G docker ec2-user
 	newgrp docker
 	sudo systemctl enable docker.service
+
+	# Install act
+	curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash

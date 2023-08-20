@@ -108,6 +108,7 @@ module "lambda" {
     lambda_role_name                = "${var.org}-${var.project_name}-${var.env}-lambda-role"
     lambda_function_name            = "${var.org}-${var.project_name}-${var.env}-lambda"
     lambda_s3_access_policy_name    = "${var.org}-${var.project_name}-${var.env}-lambda-s3-access-policy"
+    lambda_logging_policy_name      = "${var.org}-${var.project_name}-${var.env}-lambda-logging-policy"
     image_uri                       = module.ecr.ecr_image_uri
     s3_bucket_arns                  = [
         module.model_registry_bucket.s3_bucket_arn,
