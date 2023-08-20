@@ -148,4 +148,4 @@ jobs:
                   echo $STATE
               done
 
-          aws lambda update-function-configuration --function-name $LAMBDA_FUNCTION --image-config $IMAGE_URI
+          aws lambda update-function-code --function-name $LAMBDA_FUNCTION --image-uri $IMAGE_URI
