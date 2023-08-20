@@ -35,6 +35,7 @@ jobs:
     name: Build Infrastructure
     runs-on: ubuntu-latest
     environment: dev
+    needs: test
     outputs:
       ecr_repo: ${{ steps.tf-apply.outputs.ecr_repo }}
       model_registry_bucket: ${{ steps.tf-apply.outputs.model_registry_bucket }}
@@ -149,3 +150,19 @@ jobs:
               done
 
           aws lambda update-function-code --function-name $LAMBDA_FUNCTION --image-uri $IMAGE_URI
+
+  push_to_staging:
+    name: Push Changes to Staging Environment
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Merge Development -> Staging
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: staging
+          github_token: ${{ secrets.GH_TOKEN }}
