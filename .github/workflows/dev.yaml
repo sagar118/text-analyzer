@@ -54,6 +54,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
+          terraform_wrapper: false
           terraform_version: 1.5.3
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
@@ -86,24 +87,24 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD}}
         run: |
           terraform apply -var-file="./modules/vars/${TF_WORKSPACE}.tfvars" -input=false -auto-approve
-          echo "ecr_repo=$(terraform output ecr_repo | xargs)" >> $GITHUB_OUTPUT
-          echo "model_registry_bucket=$(terraform output model_registry_model_bucket | xargs)" >> $GITHUB_OUTPUT
-          echo "lambda_function=$(terraform output lambda_function | xargs)" >> $GITHUB_OUTPUT
+          echo "ecr_repo=$(terraform output -raw ecr_repo)" >> $GITHUB_OUTPUT
+          echo "model_registry_bucket=$(terraform output -raw model_registry_model_bucket)" >> $GITHUB_OUTPUT
+          echo "lambda_function=$(terraform output -raw lambda_function)" >> $GITHUB_OUTPUT
+
 
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
     environment: dev
     needs: build-infrastructure
-    outputs:
-      image_uri: ${{ steps.build-image-step.outputs.image_uri }}
+
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -113,21 +114,30 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Print variable
+        id: print-variable
+        working-directory: "deployment"
+        run: |
+          echo 'Model Registry:  ${{ steps.login-ecr.outputs.registry }}'
+          echo 'ECR Repo:  ${{ needs.build-infrastructure.outputs.ecr_repo }}'
+          echo 'Model Bucket:  ${{ needs.build-infrastructure.outputs.model_registry_bucket }}'
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image-step
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ needs.build-infrastructure.outputs.ecr_repo }}
-          IMAGE_TAG: "latest"   # ${{ github.sha }}
-          BUCKET_NAME: ${{ needs.build-infrastructure.outputs.model_registry_bucket }}
-        run: |
-          docker build --build-arg EXPERIMENT_ID=${{ secrets.EXPERIMENT_ID }} --build-arg RUN_ID=${{ secrets.RUN_ID }} --build-arg MODEL_BUCKET=${BUCKET_NAME} -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} deployment/
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image_uri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        uses: docker/build-push-action@v4
+        with:
+          context: deployment/
+          build-args: |
+            EXPERIMENT_ID=${{secrets.EXPERIMENT_ID}}
+            RUN_ID=${{secrets.RUN_ID}}
+            MODEL_BUCKET=${{ needs.build-infrastructure.outputs.model_registry_bucket }}
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-infrastructure.outputs.ecr_repo }}:latest
 
       - name: Update Lambda
         env:
           LAMBDA_FUNCTION: ${{ needs.build-infrastructure.outputs.lambda_function }}
+          IMAGE_URI: ${{ steps.login-ecr.outputs.registry }}/${{ needs.build-infrastructure.outputs.ecr_repo }}:latest
         run: |
           STATE=$(aws lambda get-function --function-name $LAMBDA_FUNCTION --region "us-east-1" --query 'Configuration.LastUpdateStatus' --output text)
               while [[ "$STATE" == "InProgress" ]]
@@ -138,4 +148,4 @@ jobs:
                   echo $STATE
               done
 
-          aws lambda update-function-configuration --function-name $LAMBDA_FUNCTION --image-uri ${{ steps.build-image-step.outputs.image_uri }}
+          aws lambda update-function-configuration --function-name $LAMBDA_FUNCTION --image-uri $IMAGE_URI
