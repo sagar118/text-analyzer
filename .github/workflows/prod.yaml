@@ -115,7 +115,7 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     environment: prod
-    needs: sync-model-registry
+    needs: [build-infrastructure, sync-model-registry]
 
     steps:
       - name: Checkout Code
