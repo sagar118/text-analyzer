@@ -1,5 +1,5 @@
 # Environment Configuration
-env = "stg"
+env = "prod"
 
 # RDS Database Configuration
 db_name = "mlflowtrackingserver"
