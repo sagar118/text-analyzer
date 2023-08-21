@@ -1,28 +1,26 @@
 import re
 import string
-
 import mlflow
 import pandas as pd
 import unidecode
 import contractions
+
 from prefect import flow, task, get_run_logger
 from utils.emoticons import EMOTICONS
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-logger = get_run_logger()
-
-
 @task(name="Load Data", log_prints=True, retries=3, retry_delay_seconds=2)
 def load_data(path):
+    logger = get_run_logger()
     logger.info("Loading data from %s", path)
     df = pd.read_csv(path)
     return df
 
-
 @task(name="Clean Data", log_prints=True)
 def clean_text(text):
+    logger = get_run_logger()
     logger.info("Cleaning text: Started")
     # Convert the text to lowercase
     text = text.str.lower()
@@ -31,20 +29,16 @@ def clean_text(text):
     text = text.str.replace(r'(&amp;|&lt;|&gt;|\n|\t)', ' ', regex=True)
 
     # Remove URLs
-    text = text.str.replace(r'https?://\S+|www\.\S+', ' ', regex=True)
+    text = text.str.replace(r'https?://\S+|www\.\S+', ' ', regex=True)  
 
     # Remove email addresses
     text = text.str.replace(r'\S+@\S+', ' ', regex=True)
 
     # Remove dates in various formats (e.g., DD-MM-YYYY, MM/DD/YY)
-    text = text.str.replace(
-        r'\d{1,2}(st|nd|rd|th)?[-./]\d{1,2}[-./]\d{2,4}', ' ', regex=True
-    )
+    text = text.str.replace(r'\d{1,2}(st|nd|rd|th)?[-./]\d{1,2}[-./]\d{2,4}', ' ', regex=True)
 
     # Remove month-day-year patterns (e.g., Jan 1st, 2022)
-    pattern = re.compile(
-        r'(\d{1,2})?(st|nd|rd|th)?[-./,]?\s?(of)?\s?([J|j]an(uary)?|[F|f]eb(ruary)?|[Mm]ar(ch)?|[Aa]pr(il)?|[Mm]ay|[Jj]un(e)?|[Jj]ul(y)?|[Aa]ug(ust)?|[Ss]ep(tember)?|[Oo]ct(ober)?|[Nn]ov(ember)?|[Dd]ec(ember)?)\s?(\d{1,2})?(st|nd|rd|th)?\s?[-./,]?\s?(\d{2,4})?'
-    )
+    pattern = re.compile(r'(\d{1,2})?(st|nd|rd|th)?[-./,]?\s?(of)?\s?([J|j]an(uary)?|[F|f]eb(ruary)?|[Mm]ar(ch)?|[Aa]pr(il)?|[Mm]ay|[Jj]un(e)?|[Jj]ul(y)?|[Aa]ug(ust)?|[Ss]ep(tember)?|[Oo]ct(ober)?|[Nn]ov(ember)?|[Dd]ec(ember)?)\s?(\d{1,2})?(st|nd|rd|th)?\s?[-./,]?\s?(\d{2,4})?')
     text = text.str.replace(pattern, ' ', regex=True)
 
     # Remove emoticons
@@ -70,9 +64,9 @@ def clean_text(text):
     logger.info("Cleaning text: Completed")
     return text
 
-
 @flow(name="Train Model", log_prints=True)
 def start_training():
+    logger = get_run_logger()
     logger.info("Starting training process...")
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
