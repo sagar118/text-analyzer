@@ -2,12 +2,7 @@
 disable = [
     "invalid-name",
     "line-too-long",
-    "missing-module-docstring",
-    "missing-timeout",
-    "missing-class-docstring",
-    "missing-function-docstring",
     "redundant-u-string-prefix",
-    "unused-import",
     "import-error",
     "anomalous-backslash-in-string",
     "wrong-import-position",
@@ -15,7 +10,8 @@ disable = [
     "not-context-manager",
     "too-many-locals",
     "unnecessary-lambda",
-    "consider-using-f-string"
+    "consider-using-f-string",
+    "duplicate-code"
 ]
 
 [tool.black]
