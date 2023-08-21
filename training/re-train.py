@@ -15,7 +15,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 @task(name="Load Data", log_prints=True)
 def load_data(path):
-    df = pd.read_parquet(path)
+    df = pd.read_csv(path)
     return df
 
 
@@ -72,7 +72,7 @@ def start_training():
     mlflow.set_experiment("Re-training Model")
 
     # Load the data
-    df = load_data("data/raw/train.parquet")
+    df = load_data("../data/raw/train.csv")
 
     # Clean the text
     df["processed_text"] = df["text"].apply(clean_text)
