@@ -1,30 +1,25 @@
 import re
 import string
-import logging
-
 import mlflow
 import pandas as pd
 import unidecode
 import contractions
-from prefect import flow, task
+
+from prefect import flow, task, get_run_logger
 from utils.emoticons import EMOTICONS
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s [%(levelname)s]: %(message)s"
-)
-
 @task(name="Load Data", log_prints=True, retries=3, retry_delay_seconds=2)
 def load_data(path):
-    logging.info("Loading data from %s", path)
+    logger.info("Loading data from %s", path)
     df = pd.read_csv(path)
     return df
 
 @task(name="Clean Data", log_prints=True)
 def clean_text(text):
-    logging.info("Cleaning text: Started")
+    logger.info("Cleaning text: Started")
     # Convert the text to lowercase
     text = text.str.lower()
 
@@ -64,12 +59,12 @@ def clean_text(text):
     # Replace multiple whitespaces with a single space
     text = text.str.replace(r'\s+', ' ', regex=True)
 
-    logging.info("Cleaning text: Completed")
+    logger.info("Cleaning text: Completed")
     return text
 
 @flow(name="Train Model", log_prints=True)
 def start_training():
-    logging.info("Starting training process...")
+    logger.info("Starting training process...")
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
 
@@ -97,16 +92,17 @@ def start_training():
 
     # Log the model
     with mlflow.start_run():
-        logging.info("Logging the model...")
+        logger.info("Logging the model...")
         mlflow.set_tag("model", "Logistic Regression")
         mlflow.set_tag("tag", "Re-tarin")
 
         mlflow.sklearn.log_model(pipeline, "model")
 
-    logging.info("Completed training process...")
+    logger.info("Completed training process...")
 
 
 if __name__ == "__main__":
-    logging.info("Main process started")
+    logger = get_run_logger()
+    logger.info("Main process started")
     start_training()
-    logging.info("Main process completed")
+    logger.info("Main process completed")
