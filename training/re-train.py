@@ -11,6 +11,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+logger = get_run_logger()
+
 @task(name="Load Data", log_prints=True, retries=3, retry_delay_seconds=2)
 def load_data(path):
     logger.info("Loading data from %s", path)
@@ -64,7 +66,6 @@ def clean_text(text):
 
 @flow(name="Train Model", log_prints=True)
 def start_training():
-    logger = get_run_logger()
     logger.info("Starting training process...")
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
