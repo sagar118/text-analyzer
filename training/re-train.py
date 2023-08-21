@@ -1,4 +1,5 @@
 import re
+import os
 import string
 
 import mlflow
@@ -12,13 +13,13 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-@task(name="Load Data")
+@task(name="Load Data", log_prints=True)
 def load_data(path):
     df = pd.read_parquet(path)
     return df
 
 
-@task(name="Clean Data")
+@task(name="Clean Data", log_prints=True)
 def clean_text(text):
     # Convert the text to lowercase
     text = text.lower()
@@ -64,9 +65,10 @@ def clean_text(text):
     return text
 
 
-@flow(name="Train Model")
+@flow(name="Train Model", log_prints=True)
 def start_training():
-    mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    print(f'Current Path: {os.getcwd()}')
+    mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
 
     # Load the data
