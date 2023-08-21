@@ -1,8 +1,19 @@
+"""
+Evidently Grafana Metrics Script
+This script defines a Prefect flow that calculates various metrics using the Evidently library,
+and inserts these metrics into a PostgreSQL database for monitoring purposes.
+
+It performs the following tasks:
+1. Preparing the PostgreSQL database for storing metrics.
+2. Calculating and extracting metrics using the Evidently library.
+3. Inserting calculated metrics into the PostgreSQL database.
+
+"""
+
 import math
 import time
 import logging
 import datetime
-from pprint import pprint
 
 import pandas as pd
 import psycopg
@@ -60,6 +71,11 @@ report = Report(
 
 @task
 def prep_db():
+    """
+    Prepare Database
+    Ensure that the PostgreSQL database 'evidently' is created and ready for use.
+
+    """
     with psycopg.connect(
         "host=localhost port=5432 user=postgres password=postgres", autocommit=True
     ) as conn:
@@ -75,6 +91,15 @@ def prep_db():
 
 @task
 def calculate_metrics_postgresql(curr, i):
+    """
+    Calculate Metrics and Insert into PostgreSQL
+    Calculate various metrics using the Evidently library and insert them into the PostgreSQL database.
+
+    Args:
+        curr: The PostgreSQL cursor.
+        i (int): Index for processing the data in chunks.
+
+    """
     current = current_data.iloc[i * 500 : (i + 1) * 500]
     current['prediction'] = model.predict(current['processed_text'])
 
@@ -188,6 +213,11 @@ def calculate_metrics_postgresql(curr, i):
 
 @flow
 def batch_monitoring():
+    """
+    Batch Monitoring Flow
+    Prefect flow that orchestrates the monitoring process, including metric calculation and database insertion.
+
+    """
     prep_db()
     ROWS = current_data.shape[0]
     iters = math.ceil(ROWS / 500)

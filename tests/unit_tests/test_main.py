@@ -1,7 +1,14 @@
-import os
+"""
+Test Main Module
+This module contains unit tests for the FastAPI application defined in the 'main.py' module.
+
+The tests cover the following:
+- Basic functionality of the root endpoint.
+
+"""
+
 import sys
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
@@ -15,6 +22,11 @@ client = TestClient(app)
 
 
 def test_read_root():
+    """
+    Test Root Endpoint
+    Test the basic functionality of the root endpoint.
+
+    """
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"hello": "world"}
