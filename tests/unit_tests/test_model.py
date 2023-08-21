@@ -68,10 +68,10 @@ def test_prepare_data(mock_model_service):
     Test the functionality of the prepare_data method.
     """
     input_data = "Hello, world! #Testing123"
-    expected_features = {'cleaned_text': "hello world "}
+    expected_features = {'cleaned_text': {0: 'hello world '}}
 
     features = mock_model_service.prepare_data(input_data)
-    assert features == expected_features
+    assert features.to_dict() == expected_features
 
 
 @patch('mlflow.pyfunc.load_model')
