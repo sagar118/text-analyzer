@@ -72,7 +72,7 @@ def start_training():
     mlflow.set_experiment("Re-training Model")
 
     # Load the data
-    df = load_data("../data/raw/train.csv")
+    df = load_data("data/raw/train.csv")
 
     # Clean the text
     df["processed_text"] = df["text"].apply(clean_text)
