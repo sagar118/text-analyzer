@@ -1,0 +1,42 @@
+version: '3.7'
+
+volumes:
+    grafana_data: {}
+
+networks:
+    front-tier: {}
+    back-tier: {}
+
+services:
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_PASSWORD: postgres
+        ports:
+            - "5432:5432"
+        networks:
+            - back-tier
+
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - "8080:8080"
+        networks:
+            - front-tier
+            - back-tier
+
+    grafana:
+        image: grafana/grafana
+        restart: always
+        user: "472"
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./config/grafana_datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
+            - ./config/grafana_dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+            - ./dashboards:/opt/grafana/dashboards
+        networks:
+            - front-tier
+            - back-tier
