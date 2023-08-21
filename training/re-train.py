@@ -64,6 +64,7 @@ def clean_text(text):
 
 @flow(name="Train Model", log_prints=True)
 def start_training():
+    logger = get_run_logger()
     logger.info("Starting training process...")
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
@@ -102,7 +103,4 @@ def start_training():
 
 
 if __name__ == "__main__":
-    logger = get_run_logger()
-    logger.info("Main process started")
     start_training()
-    logger.info("Main process completed")
