@@ -11,16 +11,16 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-logger = get_run_logger()
-
 @task(name="Load Data", log_prints=True, retries=3, retry_delay_seconds=2)
 def load_data(path):
+    logger = get_run_logger()
     logger.info("Loading data from %s", path)
     df = pd.read_csv(path)
     return df
 
 @task(name="Clean Data", log_prints=True)
 def clean_text(text):
+    logger = get_run_logger()
     logger.info("Cleaning text: Started")
     # Convert the text to lowercase
     text = text.str.lower()
@@ -66,6 +66,7 @@ def clean_text(text):
 
 @flow(name="Train Model", log_prints=True)
 def start_training():
+    logger = get_run_logger()
     logger.info("Starting training process...")
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
