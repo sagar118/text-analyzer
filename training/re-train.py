@@ -18,7 +18,7 @@ logging.basicConfig(
 
 @task(name="Load Data", log_prints=True, retries=3, retry_delay_seconds=2)
 def load_data(path):
-    logger.info("Loading data from %s", path)
+    logging.info("Loading data from %s", path)
     df = pd.read_csv(path)
     return df
 
