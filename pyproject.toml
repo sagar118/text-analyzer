@@ -13,7 +13,9 @@ disable = [
     "wrong-import-position",
     "redefined-outer-name",
     "not-context-manager",
-    "too-many-locals"
+    "too-many-locals",
+    "unnecessary-lambda",
+    "consider-using-f-string"
 ]
 
 [tool.black]
