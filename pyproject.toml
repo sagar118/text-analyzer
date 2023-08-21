@@ -11,7 +11,9 @@ disable = [
     "import-error",
     "anomalous-backslash-in-string",
     "wrong-import-position",
-    "redefined-outer-name"
+    "redefined-outer-name",
+    "not-context-manager",
+    "too-many-locals"
 ]
 
 [tool.black]
