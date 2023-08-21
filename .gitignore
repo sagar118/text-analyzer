@@ -1,6 +1,5 @@
 .DS_Store
 **/secrets.tfvars
-**/data/
 **/workflow.secrets
 **/workflow.vars
 
