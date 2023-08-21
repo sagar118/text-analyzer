@@ -67,7 +67,7 @@ def clean_text(text):
 
 @flow(name="Train Model", log_prints=True)
 def start_training():
-    print(f'Current Path: {os.getcwd()}
+    print(f'Current Path: {os.getcwd()}')
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow.set_experiment("Re-training Model")
 
