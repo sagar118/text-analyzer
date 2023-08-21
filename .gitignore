@@ -2,6 +2,7 @@
 **/secrets.tfvars
 **/workflow.secrets
 **/workflow.vars
+experiment.ipynb
 
 # --------------------
 # Local .terraform directories

@@ -63,8 +63,6 @@ def prep_db():
     with psycopg.connect(
         "host=localhost port=5432 user=postgres password=postgres", autocommit=True
     ) as conn:
-        # conn.autocommit = True
-        # curr = conn.cursor()
         res = conn.execute("SELECT 1 FROM pg_database WHERE datname = 'evidently'")
         if len(res.fetchall()) == 0:
             conn.execute("CREATE DATABASE evidently;")
@@ -72,7 +70,6 @@ def prep_db():
             "host=localhost port=5432 user=postgres password=postgres dbname=evidently",
             autocommit=True,
         ) as conn:
-            # curr = conn.cursor()
             conn.execute(create_table_query)
 
 
@@ -199,7 +196,6 @@ def batch_monitoring():
         "host=localhost port=5432 dbname=evidently user=postgres password=postgres",
         autocommit=True,
     ) as conn:
-        # conn.autocommit = True
         for i in range(iters):
             with conn.cursor() as curr:
                 calculate_metrics_postgresql(curr, i)

@@ -33,31 +33,31 @@ class ModelService:
         text = text.lower()
 
         # Remove HTML entities and special characters
-        text = re.sub(r'(&amp;|&lt;|&gt;|\n|\t)', '', text)
+        text = re.sub(r'(&amp;|&lt;|&gt;|\n|\t)', ' ', text)
 
         # Remove URLs
-        text = re.sub(r'https?://\S+|www\.\S+', '', text)
+        text = re.sub(r'https?://\S+|www\.\S+', ' ', text)  # remove urls
 
         # Remove email addresses
-        text = re.sub(r'\S+@\S+', '', text)
+        text = re.sub(r'\S+@\S+', ' ', text)
 
         # Remove dates in various formats (e.g., DD-MM-YYYY, MM/DD/YY)
-        text = re.sub(r'\d{1,2}(st|nd|rd|th)?[-./]\d{1,2}[-./]\d{2,4}', '', text)
+        text = re.sub(r'\d{1,2}(st|nd|rd|th)?[-./]\d{1,2}[-./]\d{2,4}', ' ', text)
 
         # Remove month-day-year patterns (e.g., Jan 1st, 2022)
         pattern = re.compile(
             r'(\d{1,2})?(st|nd|rd|th)?[-./,]?\s?(of)?\s?([J|j]an(uary)?|[F|f]eb(ruary)?|[Mm]ar(ch)?|[Aa]pr(il)?|[Mm]ay|[Jj]un(e)?|[Jj]ul(y)?|[Aa]ug(ust)?|[Ss]ep(tember)?|[Oo]ct(ober)?|[Nn]ov(ember)?|[Dd]ec(ember)?)\s?(\d{1,2})?(st|nd|rd|th)?\s?[-./,]?\s?(\d{2,4})?'
         )
-        text = pattern.sub(r'', text)
+        text = pattern.sub(r' ', text)
 
         # Remove emoticons
         emoticons_pattern = re.compile(
             u'(' + u'|'.join(emo for emo in EMOTICONS) + u')'
         )
-        text = emoticons_pattern.sub(r'', text)
+        text = emoticons_pattern.sub(r' ', text)
 
         # Remove mentions (@) and hashtags (#)
-        text = re.sub(r'(@\S+|#\S+)', '', text)
+        text = re.sub(r'(@\S+|#\S+)', ' ', text)
 
         # Fix contractions (e.g., "I'm" becomes "I am")
         text = contractions.fix(text)
