@@ -1,3 +1,11 @@
+"""
+Emoticons Module
+This module defines a dictionary of emoticons along with their meanings.
+
+Emoticons:
+    A dictionary containing emoticons as keys and their corresponding meanings as values.
+"""
+
 EMOTICONS = {
     u":‑\)": "Happy face or smiley",
     u":\)": "Happy face or smiley",
