@@ -81,36 +81,36 @@ There are some files that might be missing from the github directory structure b
 ├── Pipfile.lock
 ├── README.md
 ├── data
-│   ├── raw
-│   └── submission.csv
+│   ├── raw
+│   └── submission.csv
 ├── deployment
-│   ├── Dockerfile
-│   ├── Pipfile
-│   ├── Pipfile.lock
-│   └── app
+│   ├── Dockerfile
+│   ├── Pipfile
+│   ├── Pipfile.lock
+│   └── app
 ├── gradio-app
-│   └── app.py
+│   └── app.py
 ├── monitoring
-│   ├── config
-│   ├── dashboards
-│   ├── data
-│   ├── docker-compose.yaml
-│   ├── evidently_grafana_metrics.py
-│   ├── models
-│   └── notebooks
+│   ├── config
+│   ├── dashboards
+│   ├── data
+│   ├── docker-compose.yaml
+│   ├── evidently_grafana_metrics.py
+│   ├── models
+│   └── notebooks
 ├── notebooks
-│   ├── exploratory-data-analysis.ipynb
-│   └── modeling.ipynb
+│   ├── exploratory-data-analysis.ipynb
+│   └── modeling.ipynb
 ├── prefect.yaml
 ├── pyproject.toml
 ├── terraform
-│   ├── main.tf
-│   ├── modules
-│   ├── outputs.tf
-│   └── variables.tf
+│   ├── main.tf
+│   ├── modules
+│   ├── outputs.tf
+│   └── variables.tf
 ├── tests
-│   ├── integration_tests
-│   └── unit_tests
+│   ├── integration_tests
+│   └── unit_tests
 └── training
     ├── prefect.yaml
     ├── re-train.py
