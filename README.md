@@ -2,6 +2,8 @@
 
 This project is a part of the [MLOps Zoomcamp](https://github.com/DataTalksClub/mlops-zoomcamp/tree/main) Project. The aim of the project is to build an end-to-end mlops pipeline.
 
+You can find the demo of the entire project [here](https://www.loom.com/share/806ee76cec8046e1a1fc672989da1968?sid=f243efc8-557b-49a6-b32c-b05c9fc2118a)!
+
 ## Table of Content
 
 - [Problem Statement](#problem-statement)
@@ -415,6 +417,13 @@ If the functionality is working as expected in the staging environment, pipeline
 Once the changes are merged to the `main` branch, pipeline automatically deployes the application to the production environment.
 
 While working on the project, I found a great tool called `act` which allows you to run your GitHub Actions locally. This is a great tool to test your GitHub Actions locally before pushing the changes to the repository. Check out the repository [here](https://github.com/nektos/act)
+
+To make `act` function locally you would need to create two files in your local at `.github` folder. These two files are called `workflow.secrets` and `workflow.vars` to store the secrets and variables used in the github action workflow.
+
+- `workflow.secrets` contains: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION`, `TF_API_TOKEN`, `DB_USERNAME`, `DB_PASSWORD`, `EXPERIMENT_ID`, `RUN_ID`, `GH_TOKEN`
+- `workflow.vars` contains: `TF_WORKSPACE`
+
+Example to run a job locally: `act -j build-infrastructure --secret-file=.github/workflow.secrets --var-file=.github/workflow.vars`
 
 ## Best Practices
 
